@@ -24,25 +24,33 @@ Telegram API → чат / топик
 ## Установка на сервере
 
 1. Создать DNS запись которая будет ссылаться на сервер. Для удобства можно сделать домен третьего уровня. Нельзя использовать слова по типу `vpn proxy tg telegram`. Порты 80 и 443 должны быть открыты и доступны.
-2. Положите `Caddyfile` в `/app/tg-relay/` и замените `example.com` в `Caddyfile` на свой домен.
-3. Сгенерируйте секрет и создайте `.env`:
+2. Создайте директорию `/opt/tg-relay/`, положите `Caddyfile` в неё. Замените `example.com` в `Caddyfile` на свой домен.
+3. Сгенерируйте секрет:
 
- * Если используете чистый docker, через команду
-   ```sh
-   echo "RELAY_SECRET=$(openssl rand -hex 16)" > /app/tg-relay/.env
-   ```
-   
-  * ИЛИ если используете portainer, то через него
+  ```sh
+  openssl rand -hex 16
+  ```
+
+  Дальше передайте его как переменную `RELAY_SECRET`:
+
+  - **Чистый Docker Compose:** создайте `.env` рядом с `docker-compose.yml`:
+
+    ```sh
+    echo "RELAY_SECRET=<ваш секрет>" > /app/tg-relay/.env
+    ```
+
+  - **Dockhand, Portainer, Dockge и подобные:** добавьте `RELAY_SECRET` в переменные окружения стека в веб-интерфейсе, `.env` создавать не нужно.
 
 4. Запустите:
 
- * Если используете чистый docker, через команду
+   - **Чистый Docker Compose:** через команду
+ 
    ```sh
-   cd /app/tg-relay
+   cd /opt/tg-relay
    docker compose up -d
    ```
 
- * ИЛИ если используете portainer, то через него
+ - **Dockhand, Portainer, Dockge и подобные:** Через веб интерфейс
 
 5. Проверьте:
 
@@ -66,12 +74,12 @@ Telegram API → чат / топик
    | Переменная | Что указать |
    |---|---|
    | `DOMAIN` | домен вашего сервера |
-   | `SECRET_PATH` | значение `RELAY_SECRET` |
+   | `SECRET_PATH` | секрет который мы ранее генерировали |
    | `TOKEN` | токен бота от @BotFather |
    | `CHAT_ID` | ID чата |
    | `THREAD_ID` | ID топика |
 
-3. В Monit (Services → Monit → Service Test Settings) создайте тест, выберите действие **Execute** и укажите путь до скрипта. Скрипт получит переменные `MONIT_HOST`, `MONIT_SERVICE`, `MONIT_EVENT`, `MONIT_DESCRIPTION`.
+3. В Monit (Services > Monit > Service Test Settings) создайте тест, выберите действие `Execute` и укажите путь до скрипта. 
 
 4. Запустите скрипт вручную и убедитесь, что сообщение пришло. Для проверки можно подставить значения переменных:
 
