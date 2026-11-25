@@ -1,21 +1,14 @@
 #!/bin/sh
 
 # URL Variables
-SECRET_PATH="" # openssl rand -hex 16
-DOMAIN="" # api.example.com
+SECRET_PATH="a61eb280a92237b19a0c7320429fdb1d" # openssl rand -hex 16
+DOMAIN="api.kufox.su"
 
 # TG Variables
-TOKEN="" 
-CHAT_ID="" 
-ALERT_THREAD_ID="" # May be not set, message will be send in chat_id
-KEEPALIVE_THREAD_ID="" # May be not set, message will be send in chat_id
-
-
-# TG Message
-MESSAGE="HOST: $MONIT_HOST
-SERVICE: $MONIT_SERVICE
-EVENT: $MONIT_EVENT
-DETAILS: $MONIT_DESCRIPTION"
+TOKEN="9150390033:AAG5UzFgnK0_UFHPCKs6M_oJRucK8pR6_wA" 
+CHAT_ID="-1004412698731" 
+ALERT_THREAD_ID="8" # May be not set, message will be send in chat_id
+KEEPALIVE_THREAD_ID="22" # May be not set, message will be send in chat_id
 
 
 
@@ -25,10 +18,10 @@ send() {
   
   set -- --data-urlencode "chat_id=${CHAT_ID}" \
          --data-urlencode "disable_notification=${silent}" \
-         --data-urlencode "text=${MESSAGE}"
+         --data-urlencode "text=${text}"
 
   if [ -n "$thread_id" ]; then
-    set -- --data-urlencode "message_thread_id=${THREAD_ID}"
+    set -- "$@" --data-urlencode "message_thread_id=${thread_id}"
   fi
 
   code=$(/usr/local/bin/curl -s --max-time 15 -o /dev/null -w "%{http_code}" -X POST \
@@ -41,6 +34,13 @@ send() {
 	}
 
 if [ -n "$MONIT_EVENT" ]; then
+  MESSAGE="HOST: $MONIT_HOST
+SERVICE: $MONIT_SERVICE
+EVENT: $MONIT_EVENT
+DETAILS: $MONIT_DESCRIPTION"
+
   send "$ALERT_THREAD_ID" "false" "$MESSAGE"
 else
   send "$KEEPALIVE_THREAD_ID" "true" "KeepAlive: $(hostname) [$(date '+%Y-%m-%d %H:%M')]"
+fi
+ 
