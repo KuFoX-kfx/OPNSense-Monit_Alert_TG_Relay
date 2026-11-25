@@ -1,0 +1,16 @@
+example.com {
+
+    handle_path /{$RELAY_SECRET}/* {
+        reverse_proxy https://api.telegram.org {
+            header_up Host {upstream_hostport}
+        }
+    }
+
+    handle / {
+        respond "<!doctype html><title>Welcome</title><h1>Reverse Proxy is work!</h1>" 200
+    }
+
+    handle {
+        respond "Not Found" 404
+    }
+}
