@@ -77,11 +77,12 @@ Telegram API → чат / топик
    | `SECRET_PATH` | секрет который мы ранее генерировали |
    | `TOKEN` | токен бота от @BotFather |
    | `CHAT_ID` | ID чата |
-   | `THREAD_ID` | ID топика |
+   | `ALERT_THREAD_ID` | ID топика для уведомлений Monit |
+   | `KEEPALIVE_THREAD_ID` | ID топика для уведомлений Kepp Alive |
 
-3. В Monit (Services > Monit > Service Test Settings) создайте тест, выберите действие `Execute` и укажите путь до скрипта. 
+4. В Monit (Services > Monit > Service Test Settings) создайте тест, выберите действие `Execute` и укажите путь до скрипта. 
 
-4. Запустите скрипт вручную и убедитесь, что сообщение пришло. Для проверки можно подставить значения переменных:
+5. Запустите скрипт вручную и убедитесь, что сообщение пришло. Для проверки можно подставить значения переменных:
 
    ```sh
    MONIT_HOST=test MONIT_SERVICE=test MONIT_EVENT=test MONIT_DESCRIPTION=test /usr/local/bin/tg-alert.sh
